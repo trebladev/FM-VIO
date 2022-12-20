@@ -210,8 +210,25 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Initialize the Loop Closing thread and launch
     // mSensor!=MONOCULAR && mSensor!=IMU_MONOCULAR
-    mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR, activeLC); // mSensor!=MONOCULAR);
+    bool bLoopClosing = static_cast<int>(fsSettings["System.LoopClosing"]) != 0;
+    mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR, bLoopClosing); // mSensor!=MONOCULAR);
     mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+
+
+//    if(bLoopClosing)
+//    {
+//        cout << "Enabled Loop Closing" << endl;
+//
+//        mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary,
+//                                       mSensor != MONOCULAR); // mSensor!=MONOCULAR);
+//        mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+//    }
+//    else
+//    {
+//        cout << "Disabled Loop Closing" << endl;
+//        mpLoopCloser = nullptr;
+//        mptLoopClosing = nullptr;
+//    }
 
     //Set pointers between threads
     mpTracker->SetLocalMapper(mpLocalMapper);
